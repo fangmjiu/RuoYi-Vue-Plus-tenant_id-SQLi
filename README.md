@@ -8,9 +8,9 @@
 |---|---|
 | 漏洞类型 | 前台 SQL 注入 |
 | 触发入口 | `POST /auth/register` 请求体 `tenantId` 字段 |
-| 根因 | `PlusTenantLineHandler.getTenantId()` 使用 `new StringValue(tenantId)` 将外部可控租户 ID 未做处理直接拼入 SQL
+| 根因 | 外部可控租户 ID `tenant_id` 未做处理直接拼入 SQL
 | 影响 | 无需登录、无需验证码，绕过多租户隔离，可读取/篡改全库数据 |
-| 复现环境 | RuoYi-Vue-Plus-v5.5.0 + Windows |
+| 复现环境 | `RuoYi-Vue-Plus-v5.5.0` + `jdk17` + `Windows` + `mysql` + `redis` |
 
 相关分析报告：
 
@@ -19,8 +19,8 @@
 [RuoYi-Vue-Plus SQL注入漏洞(XVE-2026-50962)](https://mp.weixin.qq.com/s/iWwhEC3HFsk3_y7cHjrkOA)
 
 ## 修复建议
-1. 对参数 tenant_id 做校验
-2. 修改 application.yml 中默认的公钥和私钥
+1. 对参数 `tenant_id` 做校验
+2. 修改 `application.yml` 中默认的公钥和私钥
 
 ## 复现过程
 
