@@ -1,6 +1,6 @@
 # RuoYi‑Vue‑Plus tenant_id SQL 注入漏洞（XVE‑2026‑50962）
 
-针对 **RuoYi-Vue-Plus 5.x** 多租户 `tenant_id` 未授权 SQL 注入漏洞的复现工具与分析
+针对 **RuoYi-Vue-Plus 5.x** 多租户 `tenant_id` 未授权 SQL 注入漏洞的复现脚本
 
 ## 漏洞概述
 
